@@ -1,0 +1,17 @@
+artifacts/
+NeMo/
+models/
+data/raw/
+data/processed/
+data/processed_smoke/
+*.wav
+*.nemo
+*.pyc
+__pycache__/
+.ipynb_checkpoints/
+lightning_logs/
+wandb/
+
+# ad-hoc stdout redirects (noisy tqdm spam); clean logs ship in the tarballs
+docs/*_train_stdout.log
+docs/setup_install.log

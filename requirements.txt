@@ -1,0 +1,12 @@
+# Installed on top of the AI4Bharat NeMo fork (see setup.sh), which already
+# brings torch, pytorch-lightning, omegaconf, hydra-core, sentencepiece, etc.
+# datasets/huggingface_hub/setuptools/pytorch-lightning are version-pinned in
+# setup.sh instead (nemo_toolkit needs exact/old versions of each).
+datasets
+soundfile
+librosa
+jiwer
+huggingface_hub
+pandas
+tqdm
+requests

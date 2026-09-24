@@ -1,0 +1,66 @@
+# Fine-tuning overrides for ai4bharat/indicconformer_stt_mr_hybrid_ctc_rnnt_large.
+# Deliberately not a full model config -- encoder/decoder/joint/tokenizer come
+# from the restored checkpoint as-is; scripts/finetune.py only applies the
+# train_ds/validation_ds/optim sections on top. manifest_filepath and
+# batch_size are placeholders overridden by finetune.py's CLI flags.
+
+model:
+  train_ds:
+    manifest_filepath: ???
+    sample_rate: 16000
+    batch_size: 4
+    shuffle: true
+    num_workers: 4
+    pin_memory: true
+    max_duration: 20.0
+    min_duration: 0.3
+    is_tarred: false
+    return_language_id: true  # routes each entry's "lang" field for the multilingual tokenizer
+
+  validation_ds:
+    manifest_filepath: ???
+    sample_rate: 16000
+    batch_size: 4
+    shuffle: false
+    num_workers: 2
+    pin_memory: true
+    return_language_id: true
+
+  optim:
+    name: adamw
+    lr: 2.0e-5  # small and flat, not the pretrained NoamAnnealing schedule (tuned for training from scratch)
+    betas: [0.9, 0.98]
+    weight_decay: 0.001
+    sched:
+      name: WarmupAnnealing
+      warmup_steps: 50
+      min_lr: 1.0e-6
+
+trainer:
+  devices: 1
+  accelerator: gpu
+  precision: bf16-mixed  # halves activation memory vs fp32; GPU is shared with limited free memory
+  max_epochs: 5
+  max_steps: -1
+  accumulate_grad_batches: 8
+  gradient_clip_val: 1.0
+  log_every_n_steps: 5
+  val_check_interval: 1.0
+  num_sanity_val_steps: 0
+  enable_checkpointing: false
+  logger: false
+
+exp_manager:
+  exp_dir: ??? # set by finetune.py to artifacts/<run_id>/nemo_experiments
+  name: ??? # set by finetune.py to <run_id>
+  version: ""
+  use_datetime_version: false
+  resume_if_exists: false
+  create_checkpoint_callback: true
+  checkpoint_callback_params:
+    save_best_model: true
+    save_top_k: 1
+    monitor: val_wer
+    mode: min
+  create_tensorboard_logger: false
+  create_wandb_logger: false
