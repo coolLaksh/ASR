@@ -60,9 +60,3 @@ bash scripts/package_artifacts.sh my_run
 - **Catastrophic forgetting risk**: full fine-tuning updates all 129M parameters, including the pretrained encoder, on a small (~3h) fine-tuning set. This can degrade the model's broader, general acoustic knowledge as it adapts to the new data - a risk the heads-only run (frozen encoder) partially trades off against, at the cost of a smaller WER improvement.
 - **Limited data and training**: the fine-tuning set is small and trained for very few epochs, so results are directional evidence of a working pipeline, not a fully converged model.
 - **Single-speaker-gender source data** (SLR64 has female-only speakers) means the WER improvement is somewhat speaker/gender-skewed rather than broadly representative.
-
-## Artifacts
-
-The best checkpoint (full fine-tune, WER 0.1009) is packaged as a share-ready tarball
-(checkpoint + training log + resolved config + eval results) via `scripts/package_artifacts.sh`.
-The heads-only run above is an internal comparison, not separately distributed.
